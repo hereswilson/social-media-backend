@@ -17,11 +17,11 @@ type Post struct {
 
 // CreatePost -
 func (c Client) CreatePost(userEmail, text string) (Post, error) {
-	data, err := c.readDatabase()
+	db, err := c.readDatabase()
 	if err != nil {
 		return Post{}, err
 	}
-	_, ok := data.Users[userEmail]
+	_, ok := db.Users[userEmail]
 	if !ok {
 		return Post{}, errors.New("user doesn't exist")
 	}
@@ -32,8 +32,8 @@ func (c Client) CreatePost(userEmail, text string) (Post, error) {
 		UserEmail: userEmail,
 		Text:      text,
 	}
-	data.Posts[post.ID] = post
-	err = c.updateDatabase(data)
+	db.Posts[post.ID] = post
+	err = c.updateDatabase(db)
 	if err != nil {
 		return Post{}, err
 	}
@@ -42,16 +42,16 @@ func (c Client) CreatePost(userEmail, text string) (Post, error) {
 
 // GetPosts -
 func (c Client) GetPosts(userEmail string) ([]Post, error) {
-	data, err := c.readDatabase()
+	db, err := c.readDatabase()
 	if err != nil {
 		return nil, err
 	}
-	_, ok := data.Users[userEmail]
+	_, ok := db.Users[userEmail]
 	if !ok {
 		return nil, errors.New("user doesn't exist")
 	}
 	var posts []Post
-	for _, post := range data.Posts {
+	for _, post := range db.Posts {
 		if post.UserEmail == userEmail {
 			posts = append(posts, post)
 		}
@@ -61,16 +61,16 @@ func (c Client) GetPosts(userEmail string) ([]Post, error) {
 
 // DeletePost -
 func (c Client) DeletePost(id string) error {
-	data, err := c.readDatabase()
+	db, err := c.readDatabase()
 	if err != nil {
 		return err
 	}
-	_, ok := data.Posts[id]
+	_, ok := db.Posts[id]
 	if !ok {
 		return errors.New("post doesn't exist")
 	}
-	delete(data.Posts, id)
-	err = c.updateDatabase(data)
+	delete(db.Posts, id)
+	err = c.updateDatabase(db)
 	if err != nil {
 		return err
 	}

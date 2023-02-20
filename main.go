@@ -32,6 +32,8 @@ func main() {
 	mux.HandleFunc("/err", testErrHandler)
 	mux.HandleFunc("/users", apiCfg.endpointUsersHandler)
 	mux.HandleFunc("/users/", apiCfg.endpointUsersHandler)
+	mux.HandleFunc("/posts", apiCfg.endpointPostsHandler)
+	mux.HandleFunc("/posts/", apiCfg.endpointPostsHandler)
 
 	const addr = "localhost:8080"
 	srv := http.Server{
